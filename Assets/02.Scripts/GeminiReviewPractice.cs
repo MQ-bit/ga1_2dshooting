@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class GeminiReviewPractice : MonoBehaviour
 {
-    private void Update()
+    [SerializeField] private Rigidbody playerRigidbody;
+
+    private void FixedUpdate()
     {
-        GameObject player = GameObject.Find("Player");
+        if (playerRigidbody == null)
+        {
+            return;
+        }
 
-        Rigidbody2D playerRigidbody = player.GetComponent<Rigidbody2D>();
-        playerRigidbody.AddForce(Vector2.Up * 10f);
-
-        Debug.Log($"Player Position: {player.transform.position}");
+        playerRigidbody.AddForce(Vector3.forward * 10f);
     }
 }
