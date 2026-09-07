@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
@@ -5,6 +6,7 @@ public class PlayerMove : MonoBehaviour
     // 목적: 키보드 입력에 따라서 플레이어 이동 처리를 하고 싶다.
 
     // 필요 필드:
+    private Animator _animator;
     public float Speed;
     public float MaxPositionY;
     public float MinPositionY;
@@ -20,6 +22,10 @@ public class PlayerMove : MonoBehaviour
         Speed = Mathf.Max(Speed, Mathf.Min(Speed + amount, _maxMoveSpeed));
     }
 
+    private void Awake()
+    {
+        _animator = GetComponent<Animator>();
+    }
 
     // 매 프레임마다 실행된다.
     // 초당 프레임 실행 횟수는: 별다른 설정이 없을 경우 가능한 많이
@@ -48,7 +54,9 @@ public class PlayerMove : MonoBehaviour
         // 1. 키보드 입력을 받는다.
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
-
+        
+        
+        _animator.SetInteger("x", (int)h);
         // 2. 키보드 입력에 따라 방향을 구한다.
         Vector2 normalizedDirection = new Vector2(h, v).normalized;
 
