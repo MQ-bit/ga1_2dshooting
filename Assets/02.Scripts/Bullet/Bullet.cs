@@ -18,6 +18,9 @@ public class Bullet : MonoBehaviour
     // 트리거 관련 이벤트
     private void OnTriggerEnter2D(Collider2D other)
     {
+        // 드롭된 아이템은 총알을 막지 않는다.
+        if (other.GetComponent<Item>() != null) return;
+
         // 나죽고!
         Destroy(this.gameObject);
 

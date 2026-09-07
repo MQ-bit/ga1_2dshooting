@@ -18,6 +18,21 @@ public class PlayerFire : MonoBehaviour
     public float CoolTime = 0.5f;
     public float CoolTimer;
     public bool AutoFireMode;
+    [SerializeField, Min(0.01f)] private float _minCoolTime = 0.1f;
+
+    public void IncreaseAttackSpeed(float increaseRatio)
+    {
+        if (increaseRatio <= 0f || CoolTime <= 0f) return;
+
+        // 공격 속도 20% 증가 = 기존 발사 간격 / 1.2.
+        float previousCoolTime = CoolTime;
+        CoolTime = Mathf.Min(previousCoolTime,
+            Mathf.Max(Mathf.Max(0.01f, _minCoolTime), previousCoolTime / (1f + increaseRatio)));
+        if (CoolTimer > 0f)
+        {
+            CoolTimer *= CoolTime / previousCoolTime;
+        }
+    }
 
     private void Start()
     {

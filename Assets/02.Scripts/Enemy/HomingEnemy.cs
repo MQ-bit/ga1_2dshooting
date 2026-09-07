@@ -12,7 +12,11 @@ public class HomingEnemy : Enemy
 
     protected override void Move()
     {
-        if (_player == null) return;
+        // 추적 중 플레이어가 사라졌다면 이동 계산을 하지 않는다.
+        if (_player == null)
+        {
+            return;
+        }
 
         // 1. 방향을 구한다.
         Vector2 direction = _player.transform.position - transform.position;

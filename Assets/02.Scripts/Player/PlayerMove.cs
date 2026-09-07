@@ -10,6 +10,15 @@ public class PlayerMove : MonoBehaviour
     public float MinPositionY;
     public float MaxPositionX;
     public float MinPositionX;
+    [SerializeField, Min(0f)] private float _maxMoveSpeed = 8f;
+
+    public void IncreaseMoveSpeed(float amount)
+    {
+        if (amount <= 0f) return;
+
+        // 이미 상한보다 빠르면 아이템 때문에 느려지지 않도록 한다.
+        Speed = Mathf.Max(Speed, Mathf.Min(Speed + amount, _maxMoveSpeed));
+    }
 
 
     // 매 프레임마다 실행된다.

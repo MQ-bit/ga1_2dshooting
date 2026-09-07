@@ -7,6 +7,8 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] protected float _moveSpeed;
     [SerializeField] protected int _damage;
 
+    private bool _isDead;
+
     private void Update()
     {
         Move();
@@ -17,24 +19,36 @@ public abstract class Enemy : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        // Destroy는 프레임 끝에 처리되므로 중복 처치와 드롭을 막는다.
+        if (_isDead) return;
+
         _health -= damage;
         if (_health <= 0)
         {
+            _isDead = true;
+            ItemDropper itemDropper = GetComponent<ItemDropper>();
+            if (itemDropper != null)
+            {
+                itemDropper.TryDrop();
+            }
+
             Destroy(gameObject);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (_isDead) return;
         if (!other.CompareTag("Player")) return;
 
         // 총알처럼 대상과 충돌한 자신을 먼저 삭제한다.
+        _isDead = true;
         Destroy(gameObject);
 
         Player player = other.GetComponent<Player>();
         if (player == null)
         {
-            Debug.LogWarning("플레이어가 null입니다.");
+            // Player 컴포넌트가 없다면 데미지 처리를 하지 않는다.
             return;
         }
 

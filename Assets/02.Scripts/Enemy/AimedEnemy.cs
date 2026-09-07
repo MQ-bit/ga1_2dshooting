@@ -10,7 +10,8 @@ public class AimedEnemy : Enemy
         _player = GameObject.FindWithTag("Player");
         if (_player == null)
         {
-            Debug.Log("플레이어 태그를 가진 게임 오브젝트를 찾지 못했습니다.");
+            // 플레이어가 사라졌다면 방향 계산을 하지 않는다.
+            return;
         }
 
         _direction = _player.transform.position - transform.position;
