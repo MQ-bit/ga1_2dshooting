@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 102287263}
   - component: {fileID: 102287264}
   - component: {fileID: 102287265}
+  - component: {fileID: 102287266}
   m_Layer: 0
   m_Name: DeadZone_Bottom
   m_TagString: Untagged
@@ -257,6 +258,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &102287266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 102287262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8f4671a941e6542a35cfae65adbb77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestoryZone
 --- !u!1 &305327434
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,6 +280,7 @@ GameObject:
   m_Component:
   - component: {fileID: 305327435}
   - component: {fileID: 305327436}
+  - component: {fileID: 305327437}
   m_Layer: 0
   m_Name: DeadZone_Right
   m_TagString: Untagged
@@ -348,6 +362,18 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &305327437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 305327434}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8f4671a941e6542a35cfae65adbb77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestoryZone
 --- !u!1 &491411826
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,6 +385,7 @@ GameObject:
   - component: {fileID: 491411828}
   - component: {fileID: 491411827}
   - component: {fileID: 491411829}
+  - component: {fileID: 491411830}
   m_Layer: 0
   m_Name: DeadZone
   m_TagString: Untagged
@@ -443,6 +470,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &491411830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 491411826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8f4671a941e6542a35cfae65adbb77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestoryZone
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -788,6 +827,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1238802407}
   - component: {fileID: 1238802408}
+  - component: {fileID: 1238802409}
   m_Layer: 0
   m_Name: DeadZone_Top
   m_TagString: Untagged
@@ -869,6 +909,18 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1238802409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1238802406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8f4671a941e6542a35cfae65adbb77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestoryZone
 --- !u!1 &1398552356 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5589053558521807732, guid: 70471caf67af86a4a86edb23b81c7390, type: 3}
@@ -887,6 +939,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   _health: 10
+  _maxHealth: 10
+  _attackSpeedIncrease: 0.2
+  _healthRecovery: 3
+  _moveSpeedIncrease: 0.5
 --- !u!50 &1398552363
 Rigidbody2D:
   serializedVersion: 5
@@ -1027,6 +1083,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1931187418}
   - component: {fileID: 1931187419}
+  - component: {fileID: 1931187421}
+  - component: {fileID: 1931187420}
   m_Layer: 0
   m_Name: DeadZone_Left
   m_TagString: Untagged
@@ -1108,6 +1166,30 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!114 &1931187420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931187417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8f4671a941e6542a35cfae65adbb77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestoryZone
+--- !u!114 &1931187421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931187417}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8f4671a941e6542a35cfae65adbb77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestoryZone
 --- !u!1001 &2215493159473072373
 PrefabInstance:
   m_ObjectHideFlags: 0
