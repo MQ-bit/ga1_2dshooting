@@ -3,7 +3,12 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Item : MonoBehaviour
 {
-    public enum ItemType { AttackSpeedUp, HealthRecovery, MoveSpeedUp }
+    public enum ItemType
+    {
+        AttackSpeedUp = 0,
+        HealthRecovery = 1,
+        MoveSpeedUp = 2
+    }
 
     [SerializeField] private ItemType _type;
     [SerializeField, Min(0f)] private float _waitTime = 2f;
