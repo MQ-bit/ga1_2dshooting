@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4038382948528238720}
   - component: {fileID: 3582767397403125913}
   - component: {fileID: 900000000000000001}
+  - component: {fileID: 2306264001786058921}
   m_Layer: 0
   m_Name: DownwardEnemy
   m_TagString: Enemy
@@ -31,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.17, y: 1.43, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -85,8 +86,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.1870779, g: 0.16958882, b: 0.9716981, a: 1}
+  m_Sprite: {fileID: -1147401495359466748, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -180,8 +181,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 503c788ca3f11f942bb8258e612bfaa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DownwardEnemy
-  _health: 1
-  _moveSpeed: 3
+  _health: 3
+  _moveSpeed: 1.5
   _damage: 3
 --- !u!114 &900000000000000001
 MonoBehaviour:
@@ -200,3 +201,25 @@ MonoBehaviour:
   - {fileID: 3582767397403125913, guid: 3b38909b5e2d468e9c231fc80eca89cf, type: 3}
   - {fileID: 3582767397403125913, guid: 382f4ebdf7574a2296334cd0902722b9, type: 3}
   - {fileID: 3582767397403125913, guid: f0ece03e81714674a7469b7dcfc6aa1a, type: 3}
+--- !u!95 &2306264001786058921
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1607429435115187239}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3c81b5642afbf9c45b3d26f1201a464b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

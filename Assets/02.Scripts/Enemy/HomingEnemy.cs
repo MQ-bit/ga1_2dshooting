@@ -2,6 +2,20 @@ using UnityEngine;
 
 public class HomingEnemy : Enemy
 {
+    private Animator _animator;
+
+    private void Awake()
+    {
+        _animator = GetComponentInChildren<Animator>();
+    }
+
+    protected override void OnHit()
+    {
+        if (_animator == null) return;
+
+        _animator.SetTrigger("Hit");
+    }
+
     // 캐싱: 자주 쓸법한 데이터(객체)를 가까운 곳에 저장해두고 쓰는거
     private GameObject _player;
 
@@ -22,7 +36,14 @@ public class HomingEnemy : Enemy
         Vector2 direction = _player.transform.position - transform.position;
         direction.Normalize();
 
-        // 2. 방향과 속도에 맞게 이동한다.
-        transform.Translate(direction * _moveSpeed * Time.deltaTime);
+        // 2. 매 프레임 플레이어를 바라본다. 스프라이트의 정면은 아래쪽이다.
+        if (direction.sqrMagnitude > 0f)
+        {
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle + 90f);
+        }
+
+        // 3. 회전과 관계없이 월드 기준 방향으로 이동한다.
+        transform.Translate(direction * _moveSpeed * Time.deltaTime, Space.World);
     }
 }

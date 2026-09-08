@@ -17,17 +17,17 @@ public class Player : MonoBehaviour
 
         switch (type)
         {
-            case Item.ItemType.RedCircle:
+            case Item.ItemType.AttackSpeedUp:
                 PlayerFire playerFire = GetComponent<PlayerFire>();
                 if (playerFire == null) return false;
                 playerFire.IncreaseAttackSpeed(_attackSpeedIncrease);
                 break;
 
-            case Item.ItemType.GreenSquare:
+            case Item.ItemType.HealthRecovery:
                 _health += Mathf.Min(_healthRecovery, Mathf.Max(0, _maxHealth - _health));
                 break;
 
-            case Item.ItemType.BlueTriangle:
+            case Item.ItemType.MoveSpeedUp:
                 PlayerMove playerMove = GetComponent<PlayerMove>();
                 if (playerMove == null) return false;
                 playerMove.IncreaseMoveSpeed(_moveSpeedIncrease);

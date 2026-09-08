@@ -16,6 +16,8 @@ public abstract class Enemy : MonoBehaviour
 
     protected abstract void Move();
 
+    protected virtual void OnHit() { }
+
 
     public void TakeDamage(int damage)
     {
@@ -23,6 +25,7 @@ public abstract class Enemy : MonoBehaviour
         if (_isDead) return;
 
         _health -= damage;
+        OnHit();
         if (_health <= 0)
         {
             _isDead = true;
