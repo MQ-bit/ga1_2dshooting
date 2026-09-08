@@ -39,8 +39,12 @@ public class Bomb : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Enemy enemy = other.GetComponentInParent<Enemy>();
-        if (enemy != null)
+        // Resolve child colliders through their physics body without searching parents.
+        Rigidbody2D body = other.attachedRigidbody;
+        GameObject target = body != null ? body.gameObject : other.gameObject;
+        if (!target.CompareTag("Enemy")) return;
+
+        if (target.TryGetComponent<Enemy>(out var enemy))
         {
             // Keep the enemy's death effects and item drops.
             enemy.TakeDamage(int.MaxValue);

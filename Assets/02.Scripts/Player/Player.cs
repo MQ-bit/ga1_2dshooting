@@ -45,10 +45,11 @@ public class Player : MonoBehaviour
     {
         _health -= damage;
         
-        SpawnDeathEffect();
+      
         
         if (_health <= 0)
-        {
+        {   
+            SpawnDeathEffect();
             Destroy(gameObject);
         }
     }
