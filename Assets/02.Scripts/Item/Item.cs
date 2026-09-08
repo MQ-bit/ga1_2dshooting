@@ -14,7 +14,7 @@ public class Item : MonoBehaviour
     [SerializeField, Min(0f)] private float _waitTime = 2f;
     [SerializeField, Min(0f)] private float _moveSpeed = 1.5f;
     [SerializeField, Min(0f)] private float _curveHeight = 2f;
-
+    [SerializeField] private GameObject _itemEffectPrefab;
     private Rigidbody2D _rigidbody;
     private GameObject _player;
     private float _timer;
@@ -73,12 +73,19 @@ public class Item : MonoBehaviour
     {
         if (_collected) return;
         if (!other.CompareTag("Player")) return;
-
+        
         Player player = other.GetComponentInParent<Player>();
         if (player == null || !player.TryApplyItem(_type)) return;
-
+    
         // Destroy가 처리되기 전 다른 콜라이더가 닿아도 한 번만 적용한다.
         _collected = true;
         Destroy(gameObject);
+        SpawnItemEffect();
     }
+    
+    private void SpawnItemEffect()
+    {
+        Instantiate(_itemEffectPrefab, transform.position, Quaternion.identity);
+    }
+    
 }

@@ -184,6 +184,7 @@ MonoBehaviour:
   _waitTime: 2
   _moveSpeed: 1.5
   _curveHeight: 2
+  _itemEffectPrefab: {fileID: 8771972552311404799, guid: bbf9e36a48d6c5648a13889afab076fd, type: 3}
 --- !u!95 &6616039864819868769
 Animator:
   serializedVersion: 7

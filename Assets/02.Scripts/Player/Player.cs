@@ -9,7 +9,8 @@ public class Player : MonoBehaviour
     [SerializeField, Min(0f)] private float _attackSpeedIncrease = 0.2f;
     [SerializeField, Min(0)] private int _healthRecovery = 3;
     [SerializeField, Min(0f)] private float _moveSpeedIncrease = 0.5f;
-
+    [SerializeField] private GameObject _deathEffectPrefab;
+    
     public bool TryApplyItem(Item.ItemType type)
     {
         // 사망 처리가 예약된 플레이어는 아이템을 획득하지 않는다.
@@ -43,9 +44,16 @@ public class Player : MonoBehaviour
     public void TakeDamage(int damage)
     {
         _health -= damage;
+        
+        SpawnDeathEffect();
+        
         if (_health <= 0)
         {
             Destroy(gameObject);
         }
+    }
+    private void SpawnDeathEffect()
+    {
+        Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
     }
 }

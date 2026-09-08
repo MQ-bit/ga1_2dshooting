@@ -6,6 +6,7 @@ public class PlayerFire : MonoBehaviour
     public GameObject BulletPrefab;
     public Transform LeftFirePoint;
     public Transform RightFirePoint;
+    
 
     [Header("Auxiliary Bullets")]
     [SerializeField] private float _auxiliaryBulletSpeed = 7f;
@@ -59,7 +60,7 @@ public class PlayerFire : MonoBehaviour
     {
         CreateBullet(LeftFirePoint.position);
         CreateBullet(RightFirePoint.position);
-
+        
         // 좌우에 속도와 모양이 다른 보조 총알을 한 발씩 발사한다.
         CreateAuxiliaryBullet(LeftFirePoint, Vector2.left);
         CreateAuxiliaryBullet(RightFirePoint, Vector2.right);

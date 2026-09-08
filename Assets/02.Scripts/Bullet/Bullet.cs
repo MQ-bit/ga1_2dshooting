@@ -20,6 +20,7 @@ public class Bullet : MonoBehaviour
     {
         // 드롭된 아이템은 총알을 막지 않는다.
         if (other.GetComponent<Item>() != null) return;
+        if (other.GetComponentInParent<Bomb>() != null) return;
 
         // 나죽고!
         Destroy(this.gameObject);
