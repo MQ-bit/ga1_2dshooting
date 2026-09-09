@@ -10,6 +10,28 @@ public class Player : MonoBehaviour
     [SerializeField, Min(0)] private int _healthRecovery = 3;
     [SerializeField, Min(0f)] private float _moveSpeedIncrease = 0.5f;
     [SerializeField] private GameObject _deathEffectPrefab;
+    [SerializeField, Min(0f)] private float _invulnerabilityTime = 1.2f;
+    private float _invulnerableUntil;
+    private SpriteRenderer _sprite;
+    private Color _originalColor;
+    public int Health => _health;
+    public int MaxHealth => _maxHealth;
+
+    private void Awake()
+    {
+        _maxHealth = Mathf.Max(1, _maxHealth);
+        _health = Mathf.Clamp(_health, 1, _maxHealth);
+        _sprite = GetComponentInChildren<SpriteRenderer>();
+        if (_sprite != null) _originalColor = _sprite.color;
+    }
+
+    private void LateUpdate()
+    {
+        if (_sprite == null) return;
+        Color color = _originalColor;
+        if (Time.time < _invulnerableUntil) color.a *= Mathf.PingPong(Time.time * 12f, 1f) > 0.5f ? 0.3f : 1f;
+        _sprite.color = color;
+    }
     
     public bool TryApplyItem(Item.ItemType type)
     {
@@ -38,23 +60,36 @@ public class Player : MonoBehaviour
                 return false;
         }
 
+        CombatFeedback.Pickup(transform.position);
+        if (GameSession.Instance != null)
+            GameSession.Instance.Announce(type == Item.ItemType.HealthRecovery ? "HULL REPAIRED" :
+                type == Item.ItemType.AttackSpeedUp ? "FIRE RATE UP" : "THRUST UP", "UPGRADE ACQUIRED", 1.4f);
         return true;
     }
 
     public void TakeDamage(int damage)
     {
-        _health -= damage;
+        if (damage <= 0 || _health <= 0 || Time.time < _invulnerableUntil || GameSession.InputBlocked) return;
+        _health = Mathf.Max(0, _health - damage);
+        _invulnerableUntil = Time.time + _invulnerabilityTime;
+        CombatFeedback.PlayerHit(transform.position);
         
       
         
         if (_health <= 0)
         {   
             SpawnDeathEffect();
+            if (GameSession.Instance != null) GameSession.Instance.EndRun();
             Destroy(gameObject);
         }
     }
     private void SpawnDeathEffect()
     {
-        Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
+        if (_deathEffectPrefab != null)
+        {
+            GameObject effect = Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
+            effect.transform.localScale *= 0.65f;
+            Destroy(effect, 6f);
+        }
     }
 }

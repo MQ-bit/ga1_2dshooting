@@ -30,7 +30,11 @@ public class Item : MonoBehaviour
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
+        _rigidbody.gravityScale = 0f;
+        _rigidbody.bodyType = RigidbodyType2D.Kinematic;
+        _rigidbody.useFullKinematicContacts = true;
         _player = GameObject.FindWithTag("Player");
+        Destroy(gameObject, 20f);
     }
 
     private void FixedUpdate()
@@ -72,7 +76,6 @@ public class Item : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (_collected) return;
-        if (!other.CompareTag("Player")) return;
         
         Player player = other.GetComponentInParent<Player>();
         if (player == null || !player.TryApplyItem(_type)) return;
@@ -85,7 +88,10 @@ public class Item : MonoBehaviour
     
     private void SpawnItemEffect()
     {
-        Instantiate(_itemEffectPrefab, transform.position, Quaternion.identity);
+        if (_itemEffectPrefab == null) return;
+        GameObject effect = Instantiate(_itemEffectPrefab, transform.position, Quaternion.identity);
+        effect.transform.localScale *= 0.4f;
+        Destroy(effect, 5f);
     }
     
 }
