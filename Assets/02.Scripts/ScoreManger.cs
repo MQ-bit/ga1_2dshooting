@@ -12,11 +12,14 @@ public class ScoreManager : MonoBehaviour
     // 관리: 특정 데이터에 대한 무결성과 생성,읽기,수정,삭제 등과 관련된 게임 로직
     private int _bestScore;
     private int _currentScore;
+    
+    private const string Savekey = "BestScore";
 
     // UI 책임 추가 (텍스트메시 프로 참조)
     [SerializeField] private TextMeshProUGUI _bestScoreTextUI;
     [SerializeField] private TextMeshProUGUI _currentScoreTextUI;
-
+    
+    
 
     private void Awake()
     {
@@ -39,9 +42,24 @@ public class ScoreManager : MonoBehaviour
         if (_currentScore > _bestScore)
         {
             _bestScore = _currentScore;
+            
+            // 저장: PlayerPrefs.Set~ 시리즈를 이용해서 int float string 을 저장 가능하다
+            // 내 컴퓨터 어딘가에 저장이 된다
+            PlayerPrefs.SetInt("BestScore", _bestScore);
+            PlayerPrefs.Save();
         }
+        Refresh();
     }
 
+    private void Start()
+    {
+        if (PlayerPrefs.HasKey(Savekey))
+        {
+             _bestScore = PlayerPrefs.GetInt(Savekey);
+        }
+        _bestScore = PlayerPrefs.GetInt(Savekey,0);
+        Refresh();
+    }
 
     private void Update()
     {
