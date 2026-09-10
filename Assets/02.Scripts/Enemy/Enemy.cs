@@ -1,4 +1,6 @@
 using UnityEngine;
+
+
 public abstract class Enemy : MonoBehaviour
 {
     [SerializeField] private int _health = 10;
@@ -6,12 +8,14 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] protected int _damage;
     [SerializeField] private GameObject _deathEffectPrefab;
     private bool _isDead;
-
+    [SerializeField] private AudioClip _hitSound;
+  
     private void Update()
     {
-        if (_isDead || GameSession.InputBlocked) return;
         Move();
     }
+
+
 
     protected abstract void Move();
 
@@ -22,16 +26,19 @@ public abstract class Enemy : MonoBehaviour
     {
         // Destroy는 프레임 끝에 처리되므로 중복 처치와 드롭을 막는다.
         if (_isDead || damage <= 0) return;
-
+       
+    
+        
         _health -= damage;
+        if (_hitSound != null)
+            AudioSource.PlayClipAtPoint(_hitSound, Camera.main.transform.position, 0.5f);
         OnHit();
         if (_health <= 0)
         {
 
-            _isDead = true;
             SpawnDeathEffect();
-            CombatFeedback.Explosion(transform.position);
-            if (GameSession.Instance != null) GameSession.Instance.RegisterKill();
+            
+            _isDead = true;
             ItemDropper itemDropper = GetComponent<ItemDropper>();
             if (itemDropper != null)
             {
@@ -46,25 +53,27 @@ public abstract class Enemy : MonoBehaviour
     private void SpawnDeathEffect()
     {
         if (_deathEffectPrefab != null)
-        {
-            GameObject effect = Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
-            effect.transform.localScale *= 0.4f;
-            Destroy(effect, 6f);
-        }
+            Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (_isDead) return;
-        if (GameSession.InputBlocked) return;
-        Player player = other.GetComponentInParent<Player>();
-        if (player == null) return;
+        if (!other.CompareTag("Player")) return;
 
         // 총알처럼 대상과 충돌한 자신을 먼저 삭제한다.
         _isDead = true;
-        SpawnDeathEffect();
         Destroy(gameObject);
 
+        Player player = other.GetComponent<Player>();
+        if (player == null)
+        {
+            // Player 컴포넌트가 없다면 데미지 처리를 하지 않는다.
+            return;
+        }
+
+      
+            
         player.TakeDamage(_damage);
     }
 }

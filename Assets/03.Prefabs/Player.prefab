@@ -49,6 +49,7 @@ GameObject:
   - component: {fileID: 5579291632512539453}
   - component: {fileID: 6797127704673159380}
   - component: {fileID: 7000000000000000004}
+  - component: {fileID: 1835024495612777750}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -144,11 +145,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f6550f86129de47a01868e59f50415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
-  Speed: 4
-  MaxPositionY: 3.4
-  MinPositionY: -3.8
-  MaxPositionX: 3.55
-  MinPositionX: -3.55
+  Speed: 2
+  MaxPositionY: 3
+  MinPositionY: -3
+  MaxPositionX: 3
+  MinPositionX: -3
   _maxMoveSpeed: 8
 --- !u!114 &3438781589261147458
 MonoBehaviour:
@@ -170,9 +171,9 @@ MonoBehaviour:
   _auxiliaryBulletScale: {x: 0.15, y: 0.45, z: 1}
   _auxiliaryBulletColor: {r: 0, g: 1, b: 1, a: 1}
   _auxiliaryBulletOffset: 0.35
-  CoolTime: 0.24
+  CoolTime: 0.5
   CoolTimer: 0
-  AutoFireMode: 1
+  AutoFireMode: 0
   _minCoolTime: 0.1
 --- !u!114 &1703212594150703074
 MonoBehaviour:
@@ -192,6 +193,9 @@ MonoBehaviour:
   _healthRecovery: 3
   _moveSpeedIncrease: 0.5
   _deathEffectPrefab: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
+  _itemSound: {fileID: 8300000, guid: b99da9a57308d4ba1bee1cf1d9038376, type: 3}
+  _hitSound: {fileID: 8300000, guid: 724131bc8a7f34041bb9f1701f0cb58d, type: 3}
+  _deathSound: {fileID: 8300000, guid: 7478151cf36724a7dada558f746c3633, type: 3}
 --- !u!61 &5969360992928369913
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -336,11 +340,11 @@ TrailRenderer:
   m_SortingLayer: 0
   m_SortingOrder: -1
   m_MaskInteraction: 0
-  m_Time: 0.22
+  m_Time: 0.6
   m_PreviewTimeScale: 1
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.22
+    widthMultiplier: 0.65
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -406,6 +410,119 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 1
   m_ApplyActiveColorSpace: 1
+--- !u!114 &7000000000000000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5589053558521807732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0183e355635971546907b9176329e5ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerBomb
+  BombPrefab: {fileID: 859612348689875495, guid: ca796ac6d59617b4b8e31d34612be536, type: 3}
+  LeftFirePoint: {fileID: 8393649958774811754}
+  RightFirePoint: {fileID: 272398699205681346}
+  CoolTimer: 0
+--- !u!82 &1835024495612777750
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5589053558521807732}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 8300000, guid: 12d4ae101d3e01447b10bdb5b2e1457e, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &8516094595737028384
 GameObject:
   m_ObjectHideFlags: 0
@@ -437,19 +554,3 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7047708803728478181}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7000000000000000004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5589053558521807732}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0183e355635971546907b9176329e5ca, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerBomb
-  BombPrefab: {fileID: 859612348689875495, guid: ca796ac6d59617b4b8e31d34612be536, type: 3}
-  LeftFirePoint: {fileID: 8393649958774811754}
-  RightFirePoint: {fileID: 272398699205681346}
-  CoolTimer: 0

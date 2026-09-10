@@ -12,18 +12,16 @@ public class PlayerBomb : MonoBehaviour
 
     private void Update()
     {
-        if (GameSession.InputBlocked) return;
         CoolTimer = Mathf.Max(0f, CoolTimer - Time.deltaTime);
         if (Input.GetKeyDown(KeyCode.B) && CoolTimer <= 0f)
         {
             if (BombPrefab == null) return;
 
-            Vector3 position = LeftFirePoint != null && RightFirePoint != null
-                ? (LeftFirePoint.position + RightFirePoint.position) * 0.5f
+            Vector3 position = LeftFirePoint != null
+                ? LeftFirePoint.position
                 : transform.position;
             Instantiate(BombPrefab, position, Quaternion.identity);
             CoolTimer = MinCoolTime;
-            if (GameSession.Instance != null) GameSession.Instance.Announce("PULSE BOMB", "EXPANDING SHOCKWAVE", 1.3f);
         }
     }
 }

@@ -3,10 +3,11 @@ using UnityEngine;
 public class HomingEnemy : Enemy
 {
     private Animator _animator;
-
+    private AudioSource _damagedAudioSource;
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
+        _damagedAudioSource = GetComponent<AudioSource>();
     }
 
     protected override void OnHit()

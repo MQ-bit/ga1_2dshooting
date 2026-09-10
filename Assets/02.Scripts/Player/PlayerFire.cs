@@ -37,32 +37,29 @@ public class PlayerFire : MonoBehaviour
 
     private void Start()
     {
-        CoolTimer = 0f;
+        CoolTimer = CoolTime;
     }
 
     private void Update()
     {
-        if (GameSession.InputBlocked) return;
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             AutoFireMode = !AutoFireMode;
         }
 
-        CoolTimer = Mathf.Max(0f, CoolTimer - Time.deltaTime);
+        CoolTimer -= Time.deltaTime;
 
-        if (CoolTimer <= 0f && (Input.GetKey(KeyCode.Space) || AutoFireMode))
+        if (CoolTimer <= 0f && (Input.GetKeyDown(KeyCode.Space) || AutoFireMode))
         {
             Fire();
-            CoolTimer = Mathf.Max(_minCoolTime, CoolTime);
+            CoolTimer = CoolTime;
         }
     }
 
     private void Fire()
     {
-        if (BulletPrefab == null || LeftFirePoint == null || RightFirePoint == null) return;
         CreateBullet(LeftFirePoint.position);
         CreateBullet(RightFirePoint.position);
-        CombatFeedback.Shoot((LeftFirePoint.position + RightFirePoint.position) * 0.5f);
         
         // 좌우에 속도와 모양이 다른 보조 총알을 한 발씩 발사한다.
         CreateAuxiliaryBullet(LeftFirePoint, Vector2.left);

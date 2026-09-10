@@ -1,67 +1,88 @@
+using System;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMove : MonoBehaviour
 {
-    public float Speed = 4f;
-    public float MaxPositionY = 3.6f;
-    public float MinPositionY = -3.8f;
-    public float MaxPositionX = 3.7f;
-    public float MinPositionX = -3.7f;
-    [SerializeField, Min(0f)] private float _maxMoveSpeed = 8f;
-    [SerializeField, Range(0.1f, 1f)] private float _focusSpeedMultiplier = 0.45f;
-    [SerializeField] private bool _wrapHorizontally;
+    // 목적: 키보드 입력에 따라서 플레이어 이동 처리를 하고 싶다.
+
+    // 필요 필드:
     private Animator _animator;
-    private Rigidbody2D _body;
-    private TrailRenderer _trail;
-    private Vector2 _input;
-    private static readonly int HorizontalParameter = Animator.StringToHash("x");
-    public bool IsFocused { get; private set; }
+    public float Speed;
+    public float MaxPositionY;
+    public float MinPositionY;
+    public float MaxPositionX;
+    public float MinPositionX;
+    [SerializeField, Min(0f)] private float _maxMoveSpeed = 8f;
 
     public void IncreaseMoveSpeed(float amount)
     {
         if (amount <= 0f) return;
+
+        // 이미 상한보다 빠르면 아이템 때문에 느려지지 않도록 한다.
         Speed = Mathf.Max(Speed, Mathf.Min(Speed + amount, _maxMoveSpeed));
     }
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-        _body = GetComponent<Rigidbody2D>();
-        _trail = GetComponent<TrailRenderer>();
-        _body.bodyType = RigidbodyType2D.Kinematic;
-        _body.useFullKinematicContacts = true;
-        _body.gravityScale = 0f;
-        _body.interpolation = RigidbodyInterpolation2D.Interpolate;
-        _body.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
+    // 매 프레임마다 실행된다.
+    // 초당 프레임 실행 횟수는: 별다른 설정이 없을 경우 가능한 많이
     private void Update()
     {
-        if (GameSession.InputBlocked) { _input = Vector2.zero; return; }
-        _input = Vector2.ClampMagnitude(new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")), 1f);
-        IsFocused = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-        if (_animator != null) _animator.SetInteger(HorizontalParameter, _input.x == 0f ? 0 : _input.x > 0f ? 1 : -1);
-        if (Input.GetKeyDown(KeyCode.E)) Speed = Mathf.Clamp(Speed + 0.5f, 1f, _maxMoveSpeed);
-        if (Input.GetKeyDown(KeyCode.Q)) Speed = Mathf.Clamp(Speed - 0.5f, 1f, _maxMoveSpeed);
+        Move();
+
+        SpeedChange();
     }
 
-    private void FixedUpdate()
+    private void SpeedChange()
     {
-        if (GameSession.InputBlocked) return;
-        float speed = Mathf.Max(0f, Speed) * (IsFocused ? _focusSpeedMultiplier : 1f);
-        Vector2 position = _body.position + _input * (speed * Time.fixedDeltaTime);
-        position.y = Mathf.Clamp(position.y, MinPositionY, MaxPositionY);
-        if (_wrapHorizontally && (position.x > MaxPositionX || position.x < MinPositionX))
+        // 7. Q/E 버튼 입력을 통한 스피드 업/다운
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            position.x = position.x > MaxPositionX ? MinPositionX : MaxPositionX;
-            _body.position = position;
-            if (_trail != null) _trail.Clear();
+            Speed++;
         }
-        else
+        else if (Input.GetKeyDown(KeyCode.Q))
         {
-            position.x = Mathf.Clamp(position.x, MinPositionX, MaxPositionX);
-            _body.MovePosition(position);
+            Speed--;
         }
+    }
+
+    private void Move()
+    {
+        // 1. 키보드 입력을 받는다.
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+        
+        
+        _animator.SetInteger("x", (int)h);
+        // 2. 키보드 입력에 따라 방향을 구한다.
+        Vector2 normalizedDirection = new Vector2(h, v).normalized;
+
+        // 3. 방향과 속력에 따라 이동한다.
+        Vector2 newPosition = transform.position + (Vector3)normalizedDirection * Speed * Time.deltaTime;
+
+        // 4. 위치 y에 제한이 있다.
+        if (newPosition.y > MaxPositionY)
+        {
+            newPosition.y = MaxPositionY;
+        }
+        else if (newPosition.y < MinPositionY)
+        {
+            newPosition.y = MinPositionY;
+        }
+
+        // 5. 양 옆 끝으로 가면 반대쪽 방향으로 이동
+        if (newPosition.x > MaxPositionX)
+        {
+            newPosition.x = MinPositionX;
+        }
+        else if (newPosition.x < MinPositionX)
+        {
+            newPosition.x = MaxPositionX;
+        }
+
+        transform.position = newPosition;
     }
 }
