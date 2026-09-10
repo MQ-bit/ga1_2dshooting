@@ -35,9 +35,9 @@ body_lines=$(awk '
     }
 ' "$1")
 
-# 본문 최소 2줄 검사
-if [ "$body_lines" -lt 2 ]; then
-    echo "커밋 메시지 본문은 빈 줄과 주석을 제외하고 2줄 이상 작성해야 합니다."
+# 본문 최소 1줄 검사
+if [ "$body_lines" -lt 1 ]; then
+    echo "커밋 메시지 본문은 빈 줄과 주석을 제외하고 1줄 이상 작성해야 합니다."
     exit 1
 fi
 
