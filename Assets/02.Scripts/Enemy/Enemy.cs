@@ -39,22 +39,26 @@ public abstract class Enemy : MonoBehaviour
         if (_hitSound != null) _audioSource.PlayOneShot(_hitSound, _hitSoundVolume);
         OnHit();
 
-        if (_health > 0) return;
-
-        _health = 0;
-        _isDead = true;
-        SpawnDeathEffect();
-        ScoreManger scoreManger = GameObject.FindAnyObjectByType<ScoreManger>();
-        scoreManger.AddScore(100);
-        
-        if (TryGetComponent(out ItemDropper itemDropper))
+        if (_health <= 0)
         {
-            itemDropper.TryDrop();
-        }
+            _health = 0;
+            _isDead = true;
+            SpawnDeathEffect();
 
-        PrepareForRemoval();
-        float delay = _hitSound != null ? _hitSound.length : 0f;
-        Destroy(gameObject, delay);
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.AddScore(100);
+            }
+
+            if (TryGetComponent(out ItemDropper itemDropper))
+            {
+                itemDropper.TryDrop();
+            }
+
+            PrepareForRemoval();
+            float delay = _hitSound != null ? _hitSound.length : 0f;
+            Destroy(gameObject, delay);
+        }
     }
 
     private void SpawnDeathEffect()
