@@ -1,86 +1,75 @@
-using System;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class PlayerMove : MonoBehaviour
 {
-    // 목적: 키보드 입력에 따라서 플레이어 이동 처리를 하고 싶다.
+    private static readonly int HorizontalInput = Animator.StringToHash("x");
 
-    // 필요 필드:
-    private Animator _animator;
-    public float Speed;
-    public float MaxPositionY;
-    public float MinPositionY;
-    public float MaxPositionX;
-    public float MinPositionX;
+    [Header("Movement")]
+    [FormerlySerializedAs("Speed")]
+    [SerializeField, Min(0f)] private float _speed = 5f;
     [SerializeField, Min(0f)] private float _maxMoveSpeed = 8f;
+    [SerializeField, Min(0f)] private float _debugSpeedStep = 1f;
 
-    public void IncreaseMoveSpeed(float amount)
-    {
-        if (amount <= 0f) return;
+    [Header("Movement Bounds")]
+    [FormerlySerializedAs("MaxPositionY")]
+    [SerializeField] private float _maximumY = 4.5f;
+    [FormerlySerializedAs("MinPositionY")]
+    [SerializeField] private float _minimumY = -4.5f;
+    [FormerlySerializedAs("MaxPositionX")]
+    [SerializeField] private float _maximumX = 8f;
+    [FormerlySerializedAs("MinPositionX")]
+    [SerializeField] private float _minimumX = -8f;
 
-        // 이미 상한보다 빠르면 아이템 때문에 느려지지 않도록 한다.
-        Speed = Mathf.Max(Speed, Mathf.Min(Speed + amount, _maxMoveSpeed));
-    }
+    private Animator _animator;
 
     private void Awake()
     {
         _animator = GetComponent<Animator>();
     }
 
-    // 매 프레임마다 실행된다.
-    // 초당 프레임 실행 횟수는: 별다른 설정이 없을 경우 가능한 많이
     private void Update()
     {
         Move();
-
-        SpeedChange();
+        HandleDebugSpeedInput();
     }
 
-    private void SpeedChange()
+    public void IncreaseMoveSpeed(float amount)
     {
-        // 7. Q/E 버튼 입력을 통한 스피드 업/다운
+        if (amount <= 0f) return;
+
+        _speed = Mathf.Max(_speed, Mathf.Min(_speed + amount, _maxMoveSpeed));
+    }
+
+    private void HandleDebugSpeedInput()
+    {
         if (Input.GetKeyDown(KeyCode.E))
         {
-            Speed++;
+            _speed = Mathf.Min(_speed + _debugSpeedStep, _maxMoveSpeed);
         }
         else if (Input.GetKeyDown(KeyCode.Q))
         {
-            Speed--;
+            _speed = Mathf.Max(0f, _speed - _debugSpeedStep);
         }
     }
 
     private void Move()
     {
-        // 1. 키보드 입력을 받는다.
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
-        
-        
-        _animator.SetInteger("x", (int)h);
-        // 2. 키보드 입력에 따라 방향을 구한다.
-        Vector2 normalizedDirection = new Vector2(h, v).normalized;
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+        _animator.SetInteger(HorizontalInput, (int)horizontal);
 
-        // 3. 방향과 속력에 따라 이동한다.
-        Vector2 newPosition = transform.position + (Vector3)normalizedDirection * Speed * Time.deltaTime;
+        Vector2 direction = new Vector2(horizontal, vertical).normalized;
+        Vector2 newPosition = transform.position + (Vector3)direction * (_speed * Time.deltaTime);
+        newPosition.y = Mathf.Clamp(newPosition.y, _minimumY, _maximumY);
 
-        // 4. 위치 y에 제한이 있다.
-        if (newPosition.y > MaxPositionY)
+        if (newPosition.x > _maximumX)
         {
-            newPosition.y = MaxPositionY;
+            newPosition.x = _minimumX;
         }
-        else if (newPosition.y < MinPositionY)
+        else if (newPosition.x < _minimumX)
         {
-            newPosition.y = MinPositionY;
-        }
-
-        // 5. 양 옆 끝으로 가면 반대쪽 방향으로 이동
-        if (newPosition.x > MaxPositionX)
-        {
-            newPosition.x = MinPositionX;
-        }
-        else if (newPosition.x < MinPositionX)
-        {
-            newPosition.x = MaxPositionX;
+            newPosition.x = _maximumX;
         }
 
         transform.position = newPosition;

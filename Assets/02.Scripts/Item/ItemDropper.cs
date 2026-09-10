@@ -9,7 +9,6 @@ public class ItemDropper : MonoBehaviour
     {
         if (_itemPrefabs == null || _itemPrefabs.Length == 0) return;
 
-        // 0~99 중 0~29일 때만 드롭한다: 30%.
         if (Random.Range(0, 100) >= _dropChance) return;
 
         int index = Random.Range(0, _itemPrefabs.Length);

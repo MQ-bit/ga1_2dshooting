@@ -1,10 +1,12 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D), typeof(Animator))]
 public class Bomb : MonoBehaviour
 {
-    public float MoveSpeed = 1f;
-    private const float LifeTime = 3f;
+    [FormerlySerializedAs("MoveSpeed")]
+    [SerializeField, Min(0f)] private float _moveSpeed = 1f;
+    [SerializeField, Min(0f)] private float _lifeTime = 3f;
     private Rigidbody2D _rigidbody;
     private Animator _animator;
     private float _elapsedTime;
@@ -22,19 +24,19 @@ public class Bomb : MonoBehaviour
 
     private void Start()
     {
-        Destroy(gameObject, LifeTime);
+        Destroy(gameObject, _lifeTime);
     }
 
     private void Update()
     {
         _elapsedTime += Time.deltaTime;
         if (_animator == null) return;
-        _animator.SetFloat("tick", _elapsedTime);
+        _animator.SetFloat(TimeParameter, _elapsedTime);
     }
 
     private void FixedUpdate()
     {
-        _rigidbody.MovePosition(_rigidbody.position + Vector2.up * (MoveSpeed * Time.fixedDeltaTime));
+        _rigidbody.MovePosition(_rigidbody.position + Vector2.up * (_moveSpeed * Time.fixedDeltaTime));
     }
 
     private void OnTriggerEnter2D(Collider2D other)

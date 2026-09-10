@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class DestoryZone : MonoBehaviour
@@ -7,15 +6,5 @@ public class DestoryZone : MonoBehaviour
     {
         if (other.GetComponentInParent<Bomb>() != null) return;
         Destroy(other.gameObject);
-    }
-
-    private void Start()
-    {
-        
-    }
-
-    private void Update()
-    {
-        
     }
 }

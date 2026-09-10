@@ -108,6 +108,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   MoveSpeed: 4
   Damage: 1
+  _damageableLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!61 &-1475554411322833964
 BoxCollider2D:
   m_ObjectHideFlags: 0

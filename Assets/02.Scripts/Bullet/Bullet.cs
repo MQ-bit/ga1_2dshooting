@@ -1,60 +1,33 @@
-using System;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Bullet : MonoBehaviour
 {
-    // 목적: 총알을 위로 움직이고 싶다.
-    public float MoveSpeed;
-    public int Damage;
+    [FormerlySerializedAs("MoveSpeed")]
+    [SerializeField, Min(0f)] private float _moveSpeed = 5f;
+    [FormerlySerializedAs("Damage")]
+    [SerializeField, Min(0)] private int _damage = 1;
+    [SerializeField] private LayerMask _damageableLayers;
 
+    public void Configure(float moveSpeed, int damage)
+    {
+        _moveSpeed = Mathf.Max(0f, moveSpeed);
+        _damage = Mathf.Max(0, damage);
+    }
 
     private void Update()
     {
-        Vector2 direction = Vector2.up; //  new Vector2(0, 1);
-        transform.Translate(direction * MoveSpeed * Time.deltaTime);
+        transform.Translate(Vector2.up * (_moveSpeed * Time.deltaTime));
     }
 
-  
-
-    // 트리거 관련 이벤트
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // 드롭된 아이템은 총알을 막지 않는다.
-        if (other.GetComponent<Item>() != null) return;
-        if (other.GetComponentInParent<Bomb>() != null) return;
+        Rigidbody2D body = other.attachedRigidbody;
+        GameObject target = body != null ? body.gameObject : other.gameObject;
+        if ((_damageableLayers.value & (1 << target.layer)) == 0) return;
+        if (!target.TryGetComponent(out Enemy enemy)) return;
 
-        // 나죽고!
-        Destroy(this.gameObject);
-
-        // 충돌한 친구가 Enemy일때만 죽여쁠자!
-        if (other.gameObject.CompareTag("Enemy"))
-        {
-            // GetComponent<타입>() -> 게임 오브젝트가 가지고 있는 컴포넌트를 참조
-            Enemy enemy = other.gameObject.GetComponent<Enemy>();
-
-            // 응집도는 높히고, 결합도는 낮춰라
-            // 결합도란 묻는거.. 매번 묻는거..
-            // 무적모드 검사하고
-            // 방어력 검사.. 
-            if(enemy!=null)
-            enemy.TakeDamage(Damage);
-        }
-    }
-
-
-    // 충돌 관련 이벤트 (Enter -> Stay -> Exit)
-
-    // 충돌이 시작되면 호출되는 이벤트 함수
-   
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        //Debug.Log("충돌중이다.!");
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        // Debug.Log("충돌이 끝났다.!");
+        enemy.TakeDamage(_damage);
+        Destroy(gameObject);
     }
 }

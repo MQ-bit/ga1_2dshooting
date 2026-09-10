@@ -1,16 +1,19 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GeminiReviewPractice : MonoBehaviour
 {
-    [SerializeField] private Rigidbody playerRigidbody;
+    [FormerlySerializedAs("playerRigidbody")]
+    [SerializeField] private Rigidbody _playerRigidbody;
+    [SerializeField] private float _forwardForce = 10f;
 
     private void FixedUpdate()
     {
-        if (playerRigidbody == null)
+        if (_playerRigidbody == null)
         {
             return;
         }
 
-        playerRigidbody.AddForce(Vector3.forward * 10f);
+        _playerRigidbody.AddForce(Vector3.forward * _forwardForce);
     }
 }

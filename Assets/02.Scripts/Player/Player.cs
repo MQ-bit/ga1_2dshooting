@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class Player : MonoBehaviour
 {
     [SerializeField] private int _health = 10;
@@ -9,33 +10,37 @@ public class Player : MonoBehaviour
     [SerializeField, Min(0f)] private float _attackSpeedIncrease = 0.2f;
     [SerializeField, Min(0)] private int _healthRecovery = 3;
     [SerializeField, Min(0f)] private float _moveSpeedIncrease = 0.5f;
+
+    [Header("Effects")]
     [SerializeField] private GameObject _deathEffectPrefab;
-    
-    private AudioSource _damagedAudioSource;
     [SerializeField] private AudioClip _itemSound;
     [SerializeField] private AudioClip _hitSound;
     [SerializeField] private AudioClip _deathSound;
-    
+
+    private AudioSource _audioSource;
+
+    private void Awake()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
+
     public bool TryApplyItem(Item.ItemType type)
     {
-        // 사망 처리가 예약된 플레이어는 아이템을 획득하지 않는다.
         if (_health <= 0) return false;
 
         switch (type)
         {
             case Item.ItemType.AttackSpeedUp:
-                PlayerFire playerFire = GetComponent<PlayerFire>();
-                if (playerFire == null) return false;
+                if (!TryGetComponent(out PlayerFire playerFire)) return false;
                 playerFire.IncreaseAttackSpeed(_attackSpeedIncrease);
                 break;
 
             case Item.ItemType.HealthRecovery:
-                _health += Mathf.Min(_healthRecovery, Mathf.Max(0, _maxHealth - _health));
+                _health = Mathf.Min(_health + _healthRecovery, _maxHealth);
                 break;
 
             case Item.ItemType.MoveSpeedUp:
-                PlayerMove playerMove = GetComponent<PlayerMove>();
-                if (playerMove == null) return false;
+                if (!TryGetComponent(out PlayerMove playerMove)) return false;
                 playerMove.IncreaseMoveSpeed(_moveSpeedIncrease);
                 break;
 
@@ -43,34 +48,58 @@ public class Player : MonoBehaviour
                 return false;
         }
 
-        if (_itemSound != null) _damagedAudioSource.PlayOneShot(_itemSound);
+        PlaySound(_itemSound);
         return true;
     }
-    
-    private void Awake()
-    {
-      
-        _damagedAudioSource = GetComponent<AudioSource>();
-    }
-    
+
     public void TakeDamage(int damage)
     {
         if (_health <= 0 || damage <= 0) return;
+
         _health -= damage;
-        
-      
-        
-        if (_health <= 0)
-        {   
-            if (_deathSound != null)
-                AudioSource.PlayClipAtPoint(_deathSound, Camera.main.transform.position);
-            SpawnDeathEffect();
-            Destroy(gameObject);
+        if (_health > 0)
+        {
+            PlaySound(_hitSound);
+            return;
         }
-        else if (_hitSound != null) _damagedAudioSource.PlayOneShot(_hitSound);
+
+        _health = 0;
+        PlaySound(_deathSound);
+        SpawnDeathEffect();
+        PrepareForRemoval();
+
+        float delay = _deathSound != null ? _deathSound.length : 0f;
+        Destroy(gameObject, delay);
     }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip != null) _audioSource.PlayOneShot(clip);
+    }
+
     private void SpawnDeathEffect()
     {
-        Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
+        if (_deathEffectPrefab != null)
+        {
+            Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
+        }
+    }
+
+    private void PrepareForRemoval()
+    {
+        foreach (Collider2D playerCollider in GetComponentsInChildren<Collider2D>())
+        {
+            playerCollider.enabled = false;
+        }
+
+        foreach (Renderer playerRenderer in GetComponentsInChildren<Renderer>())
+        {
+            playerRenderer.enabled = false;
+        }
+
+        foreach (MonoBehaviour behaviour in GetComponents<MonoBehaviour>())
+        {
+            if (behaviour != this) behaviour.enabled = false;
+        }
     }
 }

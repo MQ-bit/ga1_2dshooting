@@ -1,79 +1,93 @@
 using UnityEngine;
 
-
+[RequireComponent(typeof(AudioSource))]
 public abstract class Enemy : MonoBehaviour
 {
     [SerializeField] private int _health = 10;
     [SerializeField] protected float _moveSpeed;
     [SerializeField] protected int _damage;
     [SerializeField] private GameObject _deathEffectPrefab;
-    private bool _isDead;
     [SerializeField] private AudioClip _hitSound;
-  
+    [SerializeField, Range(0f, 1f)] private float _hitSoundVolume = 0.5f;
+
+    private AudioSource _audioSource;
+    private bool _isDead;
+
+    public int Health => _health;
+
+    protected virtual void Awake()
+    {
+        _audioSource = GetComponent<AudioSource>();
+    }
+
     private void Update()
     {
         Move();
     }
 
-
-
     protected abstract void Move();
 
-    protected virtual void OnHit() { }
-
+    protected virtual void OnHit()
+    {
+    }
 
     public void TakeDamage(int damage)
     {
-        // Destroy는 프레임 끝에 처리되므로 중복 처치와 드롭을 막는다.
         if (_isDead || damage <= 0) return;
-       
-    
-        
+
         _health -= damage;
-        if (_hitSound != null)
-            AudioSource.PlayClipAtPoint(_hitSound, Camera.main.transform.position, 0.5f);
+        if (_hitSound != null) _audioSource.PlayOneShot(_hitSound, _hitSoundVolume);
         OnHit();
-        if (_health <= 0)
+
+        if (_health > 0) return;
+
+        _health = 0;
+        _isDead = true;
+        SpawnDeathEffect();
+
+        if (TryGetComponent(out ItemDropper itemDropper))
         {
-
-            SpawnDeathEffect();
-            
-            _isDead = true;
-            ItemDropper itemDropper = GetComponent<ItemDropper>();
-            if (itemDropper != null)
-            {
-                itemDropper.TryDrop();
-            }
-
-            Destroy(gameObject);
+            itemDropper.TryDrop();
         }
 
- 
+        PrepareForRemoval();
+        float delay = _hitSound != null ? _hitSound.length : 0f;
+        Destroy(gameObject, delay);
     }
+
     private void SpawnDeathEffect()
     {
         if (_deathEffectPrefab != null)
+        {
             Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
+        }
+    }
+
+    private void PrepareForRemoval()
+    {
+        foreach (Collider2D enemyCollider in GetComponentsInChildren<Collider2D>())
+        {
+            enemyCollider.enabled = false;
+        }
+
+        foreach (Renderer enemyRenderer in GetComponentsInChildren<Renderer>())
+        {
+            enemyRenderer.enabled = false;
+        }
+
+        enabled = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (_isDead) return;
-        if (!other.CompareTag("Player")) return;
+        if (_isDead || !other.CompareTag("Player")) return;
 
-        // 총알처럼 대상과 충돌한 자신을 먼저 삭제한다.
         _isDead = true;
-        Destroy(gameObject);
-
-        Player player = other.GetComponent<Player>();
-        if (player == null)
+        if (other.TryGetComponent(out Player player))
         {
-            // Player 컴포넌트가 없다면 데미지 처리를 하지 않는다.
-            return;
+            player.TakeDamage(_damage);
         }
 
-      
-            
-        player.TakeDamage(_damage);
+        Destroy(gameObject);
     }
 }

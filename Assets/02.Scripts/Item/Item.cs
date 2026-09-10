@@ -35,7 +35,7 @@ public class Item : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // 대기 중이거나 플레이어가 사라졌다면 정지한다.
+        // Keep the item stationary until it is ready to seek a valid player.
         _rigidbody.linearVelocity = Vector2.zero;
         _timer += Time.fixedDeltaTime;
         if (_timer < _waitTime) return;
@@ -52,7 +52,7 @@ public class Item : MonoBehaviour
             float side = Random.value < 0.5f ? -1f : 1f;
             _controlPoint = (_flightStart + target) * 0.5f + perpendicular * (_curveHeight * side);
 
-            // 제어점을 경유하는 거리로 비행 시간을 정한다.
+            // Estimate flight time from the two segments through the control point.
             float pathLength = Vector2.Distance(_flightStart, _controlPoint)
                                + Vector2.Distance(_controlPoint, target);
             _flightDuration = Mathf.Max(pathLength / _moveSpeed, Time.fixedDeltaTime);
@@ -62,7 +62,7 @@ public class Item : MonoBehaviour
         float t = _flightProgress;
         float remaining = 1f - t;
 
-        // 2차 베지어 곡선: 도착점은 움직이는 플레이어의 현재 위치로 갱신한다.
+        // Recalculate the quadratic Bezier endpoint from the player's current position.
         Vector2 position = remaining * remaining * _flightStart
                            + 2f * remaining * t * _controlPoint
                            + t * t * target;
@@ -77,7 +77,7 @@ public class Item : MonoBehaviour
         Player player = other.GetComponentInParent<Player>();
         if (player == null || !player.TryApplyItem(_type)) return;
     
-        // Destroy가 처리되기 전 다른 콜라이더가 닿아도 한 번만 적용한다.
+        // Prevent another collider from applying the item before destruction completes.
         _collected = true;
         Destroy(gameObject);
         SpawnItemEffect();

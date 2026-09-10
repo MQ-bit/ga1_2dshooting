@@ -4,8 +4,9 @@ public class DownwardEnemy : Enemy
 {
     private Animator _animator;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         _animator = GetComponentInChildren<Animator>();
     }
 

@@ -1,59 +1,75 @@
 using UnityEngine;
 
-// 역할: 일정 시간마다 적을 생성해주고 싶다.
 public class EnemySpawner : MonoBehaviour
 {
-    // 필요 속성
-    // - 타이머
-    [SerializeField] private float _spawnInterval = 3f;
+    private const int DownwardEnemyIndex = 0;
+    private const int AimedEnemyIndex = 1;
+    private const int HomingEnemyIndex = 2;
 
+    [Header("Spawn Timing")]
+    [SerializeField, Min(0.01f)] private float _minimumSpawnInterval = 1f;
+    [SerializeField, Min(0.01f)] private float _maximumSpawnInterval = 3f;
+
+    [Header("Enemy Prefabs")]
+    [Tooltip("Order: Downward, Aimed, Homing")]
+    [SerializeField] private Enemy[] _enemyPrefabs;
+
+    [Header("Spawn Chances")]
+    [SerializeField, Range(0f, 100f)] private float _downwardEnemyChance = 50f;
+    [SerializeField, Range(0f, 100f)] private float _aimedEnemyChance = 30f;
+
+    private float _spawnInterval;
     private float _timer;
 
-    // - 생성할 프리팹들
-    [SerializeField] private Enemy[] _enemyPrefabs;
+    private void Awake()
+    {
+        ScheduleNextSpawn();
+    }
 
     private void Update()
     {
         _timer += Time.deltaTime;
+        if (_timer < _spawnInterval) return;
 
-        if (_timer >= _spawnInterval)
-        {
-            _timer = 0;
-
-            _spawnInterval = Random.Range(1f, 3f); // float: 1 ~ 3
-
-            Spawn();
-        }
+        _timer = 0f;
+        Spawn();
+        ScheduleNextSpawn();
     }
 
     private void Spawn()
     {
-        // 각 스포너가 적을 스폰할때 확률에 따라 다른 타입의 적을 스폰해주세요.
-        // 50%: [0] Downward
-        // 30%: [1] Aimed
-        // 20%: [2] Homing
+        if (_enemyPrefabs == null || _enemyPrefabs.Length <= HomingEnemyIndex) return;
 
-        int enemyPrefabIndex = 0;
-        int radomPercent = UnityEngine.Random.Range(0, 100);
+        float totalChance = _downwardEnemyChance + _aimedEnemyChance;
+        float roll = Random.Range(0f, 100f);
+        int enemyIndex;
 
-        // Todo: Scriptable Object를 사용해서 리팩토링
-        // 이유 1: 배열을 사용했지만 각 아이템이 어떤 프리팹인지 알수가 없음
-        // 이유 2: 각 에너미 스폰 확률을 매직 넘버로 하드코딩해서 유지보수가 어렵
-        if (radomPercent < 50)
+        if (roll < _downwardEnemyChance)
         {
-            enemyPrefabIndex = 0;
+            enemyIndex = DownwardEnemyIndex;
         }
-        else if (radomPercent < 80)
+        else if (roll < totalChance)
         {
-            enemyPrefabIndex = 1;
+            enemyIndex = AimedEnemyIndex;
         }
         else
         {
-            enemyPrefabIndex = 2;
+            enemyIndex = HomingEnemyIndex;
         }
 
+        Enemy prefab = _enemyPrefabs[enemyIndex];
+        if (prefab != null) Instantiate(prefab, transform.position, Quaternion.identity);
+    }
 
-        Enemy enemy = Instantiate(_enemyPrefabs[enemyPrefabIndex]);
-        enemy.transform.position = transform.position;
+    private void ScheduleNextSpawn()
+    {
+        float minimum = Mathf.Min(_minimumSpawnInterval, _maximumSpawnInterval);
+        float maximum = Mathf.Max(_minimumSpawnInterval, _maximumSpawnInterval);
+        _spawnInterval = Random.Range(minimum, maximum);
+    }
+
+    private void OnValidate()
+    {
+        _aimedEnemyChance = Mathf.Min(_aimedEnemyChance, 100f - _downwardEnemyChance);
     }
 }

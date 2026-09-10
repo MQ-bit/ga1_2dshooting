@@ -25,10 +25,10 @@ public class PlayerFire : MonoBehaviour
     {
         if (increaseRatio <= 0f || CoolTime <= 0f) return;
 
-        // 공격 속도 20% 증가 = 기존 발사 간격 / 1.2.
+        // Convert an attack-speed multiplier into a shorter firing interval.
         float previousCoolTime = CoolTime;
         CoolTime = Mathf.Min(previousCoolTime,
-            Mathf.Max(Mathf.Max(0.01f, _minCoolTime), previousCoolTime / (1f + increaseRatio)));
+            Mathf.Max(_minCoolTime, previousCoolTime / (1f + increaseRatio)));
         if (CoolTimer > 0f)
         {
             CoolTimer *= CoolTime / previousCoolTime;
@@ -61,7 +61,7 @@ public class PlayerFire : MonoBehaviour
         CreateBullet(LeftFirePoint.position);
         CreateBullet(RightFirePoint.position);
         
-        // 좌우에 속도와 모양이 다른 보조 총알을 한 발씩 발사한다.
+        // Fire one configured auxiliary projectile from each side.
         CreateAuxiliaryBullet(LeftFirePoint, Vector2.left);
         CreateAuxiliaryBullet(RightFirePoint, Vector2.right);
     }
@@ -82,8 +82,7 @@ public class PlayerFire : MonoBehaviour
         Bullet bullet = auxiliaryBullet.GetComponent<Bullet>();
         if (bullet != null)
         {
-            bullet.MoveSpeed = _auxiliaryBulletSpeed;
-            bullet.Damage = _auxiliaryBulletDamage;
+            bullet.Configure(_auxiliaryBulletSpeed, _auxiliaryBulletDamage);
         }
 
         SpriteRenderer spriteRenderer = auxiliaryBullet.GetComponent<SpriteRenderer>();
