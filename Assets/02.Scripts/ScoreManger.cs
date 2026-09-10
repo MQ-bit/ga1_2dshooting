@@ -45,7 +45,7 @@ public class ScoreManager : MonoBehaviour
             
             // 저장: PlayerPrefs.Set~ 시리즈를 이용해서 int float string 을 저장 가능하다
             // 내 컴퓨터 어딘가에 저장이 된다
-            PlayerPrefs.SetInt("BestScore", _bestScore);
+            PlayerPrefs.SetInt(Savekey, _bestScore);
             PlayerPrefs.Save();
         }
         Refresh();
@@ -53,11 +53,7 @@ public class ScoreManager : MonoBehaviour
 
     private void Start()
     {
-        if (PlayerPrefs.HasKey(Savekey))
-        {
-             _bestScore = PlayerPrefs.GetInt(Savekey);
-        }
-        _bestScore = PlayerPrefs.GetInt(Savekey,0);
+        _bestScore = PlayerPrefs.GetInt(Savekey, 0);
         Refresh();
     }
 
