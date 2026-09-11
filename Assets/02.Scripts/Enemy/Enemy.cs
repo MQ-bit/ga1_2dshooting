@@ -7,6 +7,8 @@ public abstract class Enemy : MonoBehaviour
     [SerializeField] protected float _moveSpeed;
     [SerializeField] protected int _damage;
     [SerializeField] private GameObject _deathEffectPrefab;
+    [SerializeField] private ItemDropper _itemDropper;
+    [SerializeField, Range(0, 100)] private int _itemDropChance = 30;
     [SerializeField] private AudioClip _hitSound;
     [SerializeField, Range(0f, 1f)] private float _hitSoundVolume = 0.5f;
 
@@ -18,6 +20,7 @@ public abstract class Enemy : MonoBehaviour
     protected virtual void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
+        _itemDropper = GetComponent<ItemDropper>();
     }
 
     private void Update()
@@ -44,15 +47,14 @@ public abstract class Enemy : MonoBehaviour
             _health = 0;
             _isDead = true;
             SpawnDeathEffect();
+            if (_itemDropper != null && Random.Range(0, 100) < _itemDropChance)
+            {
+                _itemDropper.DropItem(transform.position);
+            }
 
             if (ScoreManager.Instance != null)
             {
                 ScoreManager.Instance.AddScore(100);
-            }
-
-            if (TryGetComponent(out ItemDropper itemDropper))
-            {
-                itemDropper.TryDrop();
             }
 
             PrepareForRemoval();
@@ -68,6 +70,8 @@ public abstract class Enemy : MonoBehaviour
             Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
         }
     }
+
+
 
     private void PrepareForRemoval()
     {

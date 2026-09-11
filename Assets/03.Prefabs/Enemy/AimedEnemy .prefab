@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 297469249454954981}
   - component: {fileID: 5235114458295454643}
   - component: {fileID: 8034863549189222327}
-  - component: {fileID: 900000000000000001}
   - component: {fileID: -7736138602795206593}
   - component: {fileID: 3289986362977203348}
+  - component: {fileID: -7725520359843216494}
   m_Layer: 0
   m_Name: 'AimedEnemy '
   m_TagString: Enemy
@@ -186,24 +186,10 @@ MonoBehaviour:
   _moveSpeed: 1.5
   _damage: 3
   _deathEffectPrefab: {fileID: 2433282508537954060, guid: 3ef3ae421f71c5c4e97fe12dc2fc6312, type: 3}
+  _itemDropper: {fileID: 0}
+  _itemDropChance: 30
   _hitSound: {fileID: 8300000, guid: 2c5292ba5cf254919a6b9e2b18e04f49, type: 3}
---- !u!114 &900000000000000001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8262220627450517385}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52656012937c404facc19243acedd956, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemDropper
-  _dropChance: 30
-  _itemPrefabs:
-  - {fileID: 3582767397403125913, guid: 3b38909b5e2d468e9c231fc80eca89cf, type: 3}
-  - {fileID: 3582767397403125913, guid: 382f4ebdf7574a2296334cd0902722b9, type: 3}
-  - {fileID: 3582767397403125913, guid: f0ece03e81714674a7469b7dcfc6aa1a, type: 3}
+  _hitSoundVolume: 0.5
 --- !u!95 &-7736138602795206593
 Animator:
   serializedVersion: 7
@@ -323,3 +309,16 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-7725520359843216494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8262220627450517385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 262cd9e160d253a4696281e0660dccae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemDropper
+  _dropDataTable: {fileID: 11400000, guid: c09639c17b927d046b15a31e929e0cb2, type: 2}

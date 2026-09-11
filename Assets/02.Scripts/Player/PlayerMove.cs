@@ -23,6 +23,8 @@ public class PlayerMove : MonoBehaviour
 
     private Animator _animator;
 
+    public float Speed => _speed;
+
     private void Awake()
     {
         _animator = GetComponent<Animator>();
@@ -39,6 +41,11 @@ public class PlayerMove : MonoBehaviour
         if (amount <= 0f) return;
 
         _speed = Mathf.Max(_speed, Mathf.Min(_speed + amount, _maxMoveSpeed));
+    }
+
+    public void SpeedUp(float upValue)
+    {
+        IncreaseMoveSpeed(upValue);
     }
 
     private void HandleDebugSpeedInput()

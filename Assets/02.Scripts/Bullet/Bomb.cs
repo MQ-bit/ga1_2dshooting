@@ -10,7 +10,7 @@ public class Bomb : MonoBehaviour
     private Rigidbody2D _rigidbody;
     private Animator _animator;
     private float _elapsedTime;
-    private static readonly int TimeParameter = Animator.StringToHash("Time");
+    private static readonly int TimeParameter = Animator.StringToHash("tick");
 
     private void Awake()
     {

@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 1038373118739948211}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0, z: 0}
+  m_LocalPosition: {x: 0.7, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -146,12 +146,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4f6550f86129de47a01868e59f50415, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMove
-  Speed: 2
-  MaxPositionY: 3
-  MinPositionY: -3
-  MaxPositionX: 3
-  MinPositionX: -3
+  _speed: 2
   _maxMoveSpeed: 8
+  _debugSpeedStep: 1
+  _maximumY: 3
+  _minimumY: -3
+  _maximumX: 3
+  _minimumX: -3
 --- !u!114 &3438781589261147458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,17 +166,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerFire
   BulletPrefab: {fileID: 1847664071673746640, guid: b487f1e25448be84b986a06158053be6, type: 3}
+  SubBulletPrefab: {fileID: 7406267747556694563, guid: 0daccd81634b5bf4b83d715a922b1b68, type: 3}
   LeftFirePoint: {fileID: 8393649958774811754}
   RightFirePoint: {fileID: 272398699205681346}
-  _auxiliaryBulletSpeed: 7
-  _auxiliaryBulletDamage: 2
-  _auxiliaryBulletScale: {x: 0.15, y: 0.45, z: 1}
-  _auxiliaryBulletColor: {r: 0, g: 1, b: 1, a: 1}
-  _auxiliaryBulletOffset: 0.35
-  CoolTime: 0.5
+  SubLeftFirePoint: {fileID: 0}
+  SubRightFirePoint: {fileID: 0}
+  _fireRate: 0.5
   CoolTimer: 0
   AutoFireMode: 0
-  _minCoolTime: 0.1
 --- !u!114 &1703212594150703074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,15 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa77deef4f5872e428d1a2e381d1a736, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  _health: 10
-  _maxHealth: 10
-  _attackSpeedIncrease: 0.2
-  _healthRecovery: 3
-  _moveSpeedIncrease: 0.5
-  _deathEffectPrefab: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
-  _itemSound: {fileID: 8300000, guid: b99da9a57308d4ba1bee1cf1d9038376, type: 3}
-  _hitSound: {fileID: 8300000, guid: 724131bc8a7f34041bb9f1701f0cb58d, type: 3}
-  _deathSound: {fileID: 8300000, guid: 7478151cf36724a7dada558f746c3633, type: 3}
+  _health: 100
 --- !u!61 &5969360992928369913
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -524,6 +514,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1835024495612777751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5589053558521807732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b37a154099e24c743bdfaab09693a2a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAutoMove
+  _speed: 3
+  _stopTrackingY: 2
 --- !u!1 &8516094595737028384
 GameObject:
   m_ObjectHideFlags: 0
@@ -549,25 +553,9 @@ Transform:
   m_GameObject: {fileID: 8516094595737028384}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5, y: 0, z: 0}
+  m_LocalPosition: {x: -0.7, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7047708803728478181}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-
---- !u!114 &1835024495612777751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5589053558521807732}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b37a154099e24c743bdfaab09693a2a5, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerAutoMove
-  _avoidRadius: 3
-  _steeringSpeed: 5
-  _edgeMargin: 0.8

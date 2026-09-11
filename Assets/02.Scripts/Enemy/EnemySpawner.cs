@@ -1,75 +1,49 @@
 using UnityEngine;
 
+// 역할: 일정 시간마다 적을 생성한다.
 public class EnemySpawner : MonoBehaviour
 {
-    private const int DownwardEnemyIndex = 0;
-    private const int AimedEnemyIndex = 1;
-    private const int HomingEnemyIndex = 2;
+    [SerializeField] private float _spawnInterval = 3f;
+    [SerializeField] private EnemySpawnDataTableSO _spawnDataTable;
 
-    [Header("Spawn Timing")]
-    [SerializeField, Min(0.01f)] private float _minimumSpawnInterval = 1f;
-    [SerializeField, Min(0.01f)] private float _maximumSpawnInterval = 3f;
-
-    [Header("Enemy Prefabs")]
-    [Tooltip("Order: Downward, Aimed, Homing")]
-    [SerializeField] private Enemy[] _enemyPrefabs;
-
-    [Header("Spawn Chances")]
-    [SerializeField, Range(0f, 100f)] private float _downwardEnemyChance = 50f;
-    [SerializeField, Range(0f, 100f)] private float _aimedEnemyChance = 30f;
-
-    private float _spawnInterval;
     private float _timer;
-
-    private void Awake()
-    {
-        ScheduleNextSpawn();
-    }
 
     private void Update()
     {
         _timer += Time.deltaTime;
-        if (_timer < _spawnInterval) return;
 
-        _timer = 0f;
-        Spawn();
-        ScheduleNextSpawn();
+        if (_timer >= _spawnInterval)
+        {
+            _timer = 0f;
+            _spawnInterval = Random.Range(1f, 3f);
+
+            Spawn();
+        }
     }
 
     private void Spawn()
     {
-        if (_enemyPrefabs == null || _enemyPrefabs.Length <= HomingEnemyIndex) return;
-
-        float totalChance = _downwardEnemyChance + _aimedEnemyChance;
-        float roll = Random.Range(0f, 100f);
-        int enemyIndex;
-
-        if (roll < _downwardEnemyChance)
+        // 추첨할 수 있는 모든 가중치를 더한다.
+        int totalWeight = 0;
+        foreach (EnemySpawnData data in _spawnDataTable.Datas)
         {
-            enemyIndex = DownwardEnemyIndex;
-        }
-        else if (roll < totalChance)
-        {
-            enemyIndex = AimedEnemyIndex;
-        }
-        else
-        {
-            enemyIndex = HomingEnemyIndex;
+            totalWeight += data.Percent;
         }
 
-        Enemy prefab = _enemyPrefabs[enemyIndex];
-        if (prefab != null) Instantiate(prefab, transform.position, Quaternion.identity);
-    }
+        // 전체 가중치 범위에서 랜덤한 정수를 뽑는다.
+        int randomWeight = Random.Range(0, totalWeight);
 
-    private void ScheduleNextSpawn()
-    {
-        float minimum = Mathf.Min(_minimumSpawnInterval, _maximumSpawnInterval);
-        float maximum = Mathf.Max(_minimumSpawnInterval, _maximumSpawnInterval);
-        _spawnInterval = Random.Range(minimum, maximum);
-    }
-
-    private void OnValidate()
-    {
-        _aimedEnemyChance = Mathf.Min(_aimedEnemyChance, 100f - _downwardEnemyChance);
+        // 가중치를 누적하면서 선택된 구간을 찾는다.
+        int cumulativeWeight = 0;
+        foreach (EnemySpawnData data in _spawnDataTable.Datas)
+        {
+            cumulativeWeight += data.Percent;
+            if (randomWeight < cumulativeWeight)
+            {
+                GameObject enemy = Instantiate(data.EnemyPrefab);
+                enemy.transform.position = transform.position;
+                break;
+            }
+        }
     }
 }

@@ -1,105 +1,34 @@
 using UnityEngine;
 
-[RequireComponent(typeof(AudioSource))]
 public class Player : MonoBehaviour
 {
-    [SerializeField] private int _health = 10;
-    [SerializeField, Min(1)] private int _maxHealth = 10;
-
-    [Header("Item Effects")]
-    [SerializeField, Min(0f)] private float _attackSpeedIncrease = 0.2f;
-    [SerializeField, Min(0)] private int _healthRecovery = 3;
-    [SerializeField, Min(0f)] private float _moveSpeedIncrease = 0.5f;
-
-    [Header("Effects")]
-    [SerializeField] private GameObject _deathEffectPrefab;
-    [SerializeField] private AudioClip _itemSound;
-    [SerializeField] private AudioClip _hitSound;
-    [SerializeField] private AudioClip _deathSound;
-
-    private AudioSource _audioSource;
-
-    private void Awake()
-    {
-        _audioSource = GetComponent<AudioSource>();
-    }
-
-    public bool TryApplyItem(Item.ItemType type)
-    {
-        if (_health <= 0) return false;
-
-        switch (type)
-        {
-            case Item.ItemType.AttackSpeedUp:
-                if (!TryGetComponent(out PlayerFire playerFire)) return false;
-                playerFire.IncreaseAttackSpeed(_attackSpeedIncrease);
-                break;
-
-            case Item.ItemType.HealthRecovery:
-                _health = Mathf.Min(_health + _healthRecovery, _maxHealth);
-                break;
-
-            case Item.ItemType.MoveSpeedUp:
-                if (!TryGetComponent(out PlayerMove playerMove)) return false;
-                playerMove.IncreaseMoveSpeed(_moveSpeedIncrease);
-                break;
-
-            default:
-                return false;
-        }
-
-        PlaySound(_itemSound);
-        return true;
-    }
+    // 체력은 외부에서 직접 수정할 수 없고 메서드를 통해서만 변경한다.
+    [SerializeField] private int _health = 100;
+    public int Health => _health;
 
     public void TakeDamage(int damage)
     {
-        if (_health <= 0 || damage <= 0) return;
-
-        _health -= damage;
-        if (_health > 0)
+        if (damage < 0)
         {
-            PlaySound(_hitSound);
+            Debug.LogWarning("대미지는 음수일 수 없습니다.");
             return;
         }
 
-        _health = 0;
-        PlaySound(_deathSound);
-        SpawnDeathEffect();
-        PrepareForRemoval();
-
-        float delay = _deathSound != null ? _deathSound.length : 0f;
-        Destroy(gameObject, delay);
-    }
-
-    private void PlaySound(AudioClip clip)
-    {
-        if (clip != null) _audioSource.PlayOneShot(clip);
-    }
-
-    private void SpawnDeathEffect()
-    {
-        if (_deathEffectPrefab != null)
+        _health -= damage;
+        if (_health <= 0)
         {
-            Instantiate(_deathEffectPrefab, transform.position, Quaternion.identity);
+            Destroy(gameObject);
         }
     }
 
-    private void PrepareForRemoval()
+    public void Heal(int healAmount)
     {
-        foreach (Collider2D playerCollider in GetComponentsInChildren<Collider2D>())
+        if (healAmount < 0)
         {
-            playerCollider.enabled = false;
+            Debug.LogWarning("힐량은 음수일 수 없습니다.");
+            return;
         }
 
-        foreach (Renderer playerRenderer in GetComponentsInChildren<Renderer>())
-        {
-            playerRenderer.enabled = false;
-        }
-
-        foreach (MonoBehaviour behaviour in GetComponents<MonoBehaviour>())
-        {
-            if (behaviour != this) behaviour.enabled = false;
-        }
+        _health += healAmount;
     }
 }
