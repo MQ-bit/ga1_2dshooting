@@ -24,7 +24,12 @@ public class PlayerFire : MonoBehaviour
     public float CoolTimer = 0;
 
     // - 오토 모드
-    public bool AutoFireMode = false;
+    public bool _autoFireMode = false;
+
+    public void SetAuto(bool auto)
+    {
+        _autoFireMode = auto;
+    }
 
     private void Start()
     {
@@ -37,14 +42,14 @@ public class PlayerFire : MonoBehaviour
         // 오토 공격 모드 토글
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            AutoFireMode = !AutoFireMode;
+            _autoFireMode = !_autoFireMode;
         }
 
         // 0. 쿨타이머 감소
         CoolTimer -= Time.deltaTime;
 
         // 1. 쿨타이머가 0초 이하이고 && (스페이스바를 누르거나 || 오토 모드라면)
-        if (CoolTimer <= 0 && (Input.GetKeyDown(KeyCode.Space) || AutoFireMode))
+        if (CoolTimer <= 0 && (Input.GetKeyDown(KeyCode.Space) || _autoFireMode))
         {
             // 2. 발사
             Fire();

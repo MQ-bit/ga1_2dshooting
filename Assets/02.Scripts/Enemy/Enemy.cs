@@ -14,7 +14,7 @@ public abstract class Enemy : MonoBehaviour
 
     private AudioSource _audioSource;
     private bool _isDead;
-
+    
     public int Health => _health;
 
     protected virtual void Awake()

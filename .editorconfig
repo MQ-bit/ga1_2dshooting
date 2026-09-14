@@ -46,3 +46,15 @@ dotnet_naming_rule.private_static_readonly_pascal.severity = warning
 
 # 규칙 severity는 IDE에서만 존중되므로, 빌드/dotnet format에서 잡히도록 진단 severity도 올린다.
 dotnet_diagnostic.IDE1006.severity = warning
+# UI_로 시작하는 파일: 클래스명은 UI_ + PascalCase
+[Assets/02.Scripts/**UI_*.cs]
+
+dotnet_naming_style.ui_pascal_case.required_prefix = UI_
+dotnet_naming_style.ui_pascal_case.capitalization = pascal_case
+
+dotnet_naming_symbols.ui_classes.applicable_kinds = class
+dotnet_naming_symbols.ui_classes.applicable_accessibilities = *
+
+dotnet_naming_rule.ui_classes_prefix.symbols = ui_classes
+dotnet_naming_rule.ui_classes_prefix.style = ui_pascal_case
+dotnet_naming_rule.ui_classes_prefix.severity = warning
