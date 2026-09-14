@@ -38,6 +38,7 @@ public class PlayerAutoMove : MonoBehaviour
         direction.Normalize();
 
         // 3. 속도에 맞게 이동을한다.
+        float finalSpeed = _speed + UpgradeManager.Instance.Upgrades[2].CurrentValue;
         transform.position += direction * _speed * Time.deltaTime;
     }
 
