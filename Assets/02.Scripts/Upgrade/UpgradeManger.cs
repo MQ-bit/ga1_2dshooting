@@ -68,20 +68,35 @@ public class UpgradeManager : MonoBehaviour
     {
         // 데이터 저장은 유의미한 정보만 저장을 한다.
         // 그래서 레벨만 저장한다
-
+        
+        UpgradeSaveData saveData =new UpgradeSaveData(_upgrades.Length);
         for (int i = 0; i < _upgrades.Length; i++)
         {
-            PlayerPrefs.SetInt($"Upgrade.{i}.Level", _upgrades[i].Level);
+            saveData.Name[i] = _upgrades[i].Name;
+            saveData.Level[i] = _upgrades[i].Level;
         }
+        
+        //json 포맷으로 문자열 반환으로    
+        //키와 밸류 형탸로 저장한 형태
+        
+        string text= JsonUtility.ToJson(saveData);
+        PlayerPrefs.SetString("UpgradeSaveData", text);
+        PlayerPrefs.Save();
         
     }
 
     private void Load()
     {
+        if (PlayerPrefs.HasKey("UpgradeSaveData")) return;
+        
+        string json= PlayerPrefs.GetString("UpgradeSaveData", string.Empty);
+        UpgradeSaveData saveData = JsonUtility.FromJson<UpgradeSaveData>(json);
+        
         for (int i = 0; i < _upgrades.Length; i++)
-        {
-            int level =PlayerPrefs.GetInt($"Upgrade.{i}.Level", 1);
-            _upgrades[i].SetLevel(level);
+        {   
+            Debug.Log($"{_upgrades[i].Name} 로드 완료!");
+            _upgrades[i].SetLevel(saveData.Level[i]);
+            
         }
     }
     
