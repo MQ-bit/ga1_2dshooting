@@ -1,3 +1,4 @@
+using Unity.Profiling.LowLevel.Unsafe;
 using UnityEngine;
 
 [System.Serializable]
@@ -22,6 +23,12 @@ public class Upgrade
     private int _cost;
     public int Cost => _cost;
 
+    public void SetLevel(int level)
+    {
+        _level = level;
+        Calculate();
+    }
+    
     public Upgrade(int level, string name, float defaultValue, float increaseValue, float increaseCost)
     {
         _level = level;
