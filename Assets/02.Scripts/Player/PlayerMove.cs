@@ -62,8 +62,8 @@ public class PlayerMove : MonoBehaviour
 
     private void Move()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
+        float horizontal = SimpleInput.GetAxisRaw("Horizontal");
+        float vertical = SimpleInput.GetAxisRaw("Vertical");
         _animator.SetInteger(HorizontalInput, (int)horizontal);
 
         Vector2 direction = new Vector2(horizontal, vertical).normalized;
