@@ -14,6 +14,7 @@ public class UpgradeManager : MonoBehaviour
     // 업그레이드 UI들
     [SerializeField] private UI_Upgrade[] _uiUpgrades;
 
+    private const string UpgradeSaveDataKey = "UpgradeSaveData";
 
     private void Awake()
     {
@@ -28,16 +29,15 @@ public class UpgradeManager : MonoBehaviour
     }
 
     private void Start()
-    {   
-        
+    {
         Load();
-        
+
         RefreshUI();
     }
-    
+
     public void LevelUp(int index)
-    {   
-        
+    {
+        // Todo: 묻지말고 시켜라!
         // 골드 매니저에게 돈이 있는지 물어보고 돈이 있다면 차감 후 업그레이드 호출
 
         Upgrade upgrade = _upgrades[index];
@@ -48,10 +48,10 @@ public class UpgradeManager : MonoBehaviour
         }
 
         ScoreManager.Instance.SpendScore(upgrade.Cost);
+
         _upgrades[index].LevelUp();
 
         Save();
-        
         RefreshUI();
     }
 
@@ -67,37 +67,33 @@ public class UpgradeManager : MonoBehaviour
     private void Save()
     {
         // 데이터 저장은 유의미한 정보만 저장을 한다.
-        // 그래서 레벨만 저장한다
-        
-        UpgradeSaveData saveData =new UpgradeSaveData(_upgrades.Length);
+        // 그래서 레벨만 저장한다.
+
+        UpgradeSaveData saveData = new UpgradeSaveData(_upgrades.Length);
         for (int i = 0; i < _upgrades.Length; i++)
         {
             saveData.Name[i] = _upgrades[i].Name;
             saveData.Level[i] = _upgrades[i].Level;
         }
-        
-        //json 포맷으로 문자열 반환으로    
-        //키와 밸류 형탸로 저장한 형태
-        
-        string text= JsonUtility.ToJson(saveData);
-        PlayerPrefs.SetString("UpgradeSaveData", text);
+
+        // json 포맷으로 문자열 변환으로
+        // 키와 밸류 형태로 저장한 형태
+        string json = JsonUtility.ToJson(saveData);
+        PlayerPrefs.SetString(UpgradeSaveDataKey, json);
         PlayerPrefs.Save();
-        
     }
 
     private void Load()
     {
-        if (PlayerPrefs.HasKey("UpgradeSaveData")) return;
-        
-        string json= PlayerPrefs.GetString("UpgradeSaveData", string.Empty);
+        if (!PlayerPrefs.HasKey((UpgradeSaveDataKey))) return;
+
+        string json = PlayerPrefs.GetString((UpgradeSaveDataKey));
         UpgradeSaveData saveData = JsonUtility.FromJson<UpgradeSaveData>(json);
-        
+
         for (int i = 0; i < _upgrades.Length; i++)
-        {   
+        {
             Debug.Log($"{_upgrades[i].Name} 로드 완료!");
             _upgrades[i].SetLevel(saveData.Level[i]);
-            
         }
     }
-    
 }
