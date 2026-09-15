@@ -46,3 +46,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   _spawnInterval: 3
   _spawnDataTable: {fileID: 11400000, guid: 858b50531f4a65f4d8ad497247e4997e, type: 2}
+  _balanceDataTable: {fileID: 11400000, guid: b692ffe96c2ee3143be744f7ec6fd13f, type: 2}

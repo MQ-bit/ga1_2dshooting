@@ -3,7 +3,9 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public abstract class Enemy : MonoBehaviour
 {
-    [SerializeField] private int _health = 10;
+    
+    [SerializeField] private int _baseHealth;
+    [SerializeField] private int _health = 100;
     [SerializeField] protected float _moveSpeed;
     [SerializeField] protected int _damage;
     [SerializeField] private GameObject _deathEffectPrefab;
@@ -28,6 +30,12 @@ public abstract class Enemy : MonoBehaviour
         Move();
     }
 
+    public void SetHealthBalance(float multiplier)
+    {
+        // 체력 초기화
+        _health =(int)(_baseHealth * multiplier);
+    }
+    
     protected abstract void Move();
 
     protected virtual void OnHit()
